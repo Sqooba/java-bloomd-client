@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
 
 public class BloomdClientImpl implements BloomdClient, BloomdHandler.OnReplyReceivedListener {
 
@@ -40,62 +39,62 @@ public class BloomdClientImpl implements BloomdClient, BloomdHandler.OnReplyRece
     }
 
     @Override
-    public Future<List<BloomdFilter>> list() {
+    public CompletableFuture<List<BloomdFilter>> list() {
         return list(null);
     }
 
     @Override
-    public Future<List<BloomdFilter>> list(String prefix) {
+    public CompletableFuture<List<BloomdFilter>> list(String prefix) {
         return sendCommand(listCodec, prefix == null ? "" : prefix);
     }
 
     @Override
-    public Future<CreateResult> create(String filterName) {
+    public CompletableFuture<CreateResult> create(String filterName) {
         CreateFilterArgs args = new CreateFilterArgs.Builder()
-                .setFilterName(filterName)
-                .build();
+            .setFilterName(filterName)
+            .build();
 
         return create(args);
     }
 
     @Override
-    public Future<CreateResult> create(CreateFilterArgs args) {
+    public CompletableFuture<CreateResult> create(CreateFilterArgs args) {
         checkFilterNameValid(args.getFilterName());
         return sendCommand(createCodec, args);
     }
 
     @Override
-    public Future<Boolean> drop(String filterName) {
+    public CompletableFuture<Boolean> drop(String filterName) {
         checkFilterNameValid(filterName);
         return sendCommand(dropCodec, filterName);
     }
 
     @Override
-    public Future<Boolean> close(String filterName) {
+    public CompletableFuture<Boolean> close(String filterName) {
         checkFilterNameValid(filterName);
         return sendCommand(closeCodec, filterName);
     }
 
     @Override
-    public Future<ClearResult> clear(String filterName) {
+    public CompletableFuture<ClearResult> clear(String filterName) {
         checkFilterNameValid(filterName);
         return sendCommand(clearCodec, filterName);
     }
 
     @Override
-    public Future<StateResult> check(String filterName, String key) {
+    public CompletableFuture<StateResult> check(String filterName, String key) {
         StateArgs args = new StateArgs.Builder().setFilterName(filterName).addKey(key).build();
         return sendCommand(checkCodec, args);
     }
 
     @Override
-    public Future<StateResult> set(String filterName, String key) {
+    public CompletableFuture<StateResult> set(String filterName, String key) {
         StateArgs args = new StateArgs.Builder().setFilterName(filterName).addKey(key).build();
         return sendCommand(setCodec, args);
     }
 
     @Override
-    public Future<List<StateResult>> multi(String filterName, String... keys) {
+    public CompletableFuture<List<StateResult>> multi(String filterName, String... keys) {
         StateArgs.Builder builder = new StateArgs.Builder().setFilterName(filterName);
         for (String key : keys) {
             builder.addKey(key);
@@ -104,7 +103,7 @@ public class BloomdClientImpl implements BloomdClient, BloomdHandler.OnReplyRece
     }
 
     @Override
-    public Future<List<StateResult>> bulk(String filterName, String... keys) {
+    public CompletableFuture<List<StateResult>> bulk(String filterName, String... keys) {
         StateArgs.Builder builder = new StateArgs.Builder().setFilterName(filterName);
         for (String key : keys) {
             builder.addKey(key);
@@ -113,13 +112,13 @@ public class BloomdClientImpl implements BloomdClient, BloomdHandler.OnReplyRece
     }
 
     @Override
-    public Future<BloomdInfo> info(String filterName) {
+    public CompletableFuture<BloomdInfo> info(String filterName) {
         checkFilterNameValid(filterName);
         return sendCommand(infoCodec, filterName);
     }
 
     @Override
-    public Future<Boolean> flush(String filterName) {
+    public CompletableFuture<Boolean> flush(String filterName) {
         checkFilterNameValid(filterName);
         return sendCommand(flushCodec, filterName);
     }
